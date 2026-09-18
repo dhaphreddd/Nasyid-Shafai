@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { getNasyidById, addNasyid, updateNasyid } from '../repositories/nasyidRepository';
 import { uploadToCloudinary } from '../services/cloudinaryService';
-import { ArrowLeft, Upload, Trash2, ArrowLeftRight, Image as ImageIcon, CheckCircle, AlertCircle, MoveLeft, MoveRight } from 'lucide-react';
+import { ArrowLeft, Upload, Trash2, Image as ImageIcon, CheckCircle, AlertCircle, MoveLeft, MoveRight } from 'lucide-react';
 
 interface PreviewItem {
   id: string;
@@ -70,11 +70,10 @@ export const AdminAddEditPage: React.FC = () => {
 
     setItems((prev) => [...prev, ...newItems]);
 
-    // Reset input so user can choose the same file again if needed
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  // Move item left in preview list
+  // Move item left
   const moveItemLeft = (index: number) => {
     if (index === 0) return;
     setItems((prev) => {
@@ -86,7 +85,7 @@ export const AdminAddEditPage: React.FC = () => {
     });
   };
 
-  // Move item right in preview list
+  // Move item right
   const moveItemRight = (index: number) => {
     if (index === items.length - 1) return;
     setItems((prev) => {
@@ -156,24 +155,24 @@ export const AdminAddEditPage: React.FC = () => {
 
   if (fetching) {
     return (
-      <div className="min-h-screen bg-surface-dark flex items-center justify-center p-4">
+      <div className="min-h-screen bg-surface-dark dark:bg-darkBg-base flex items-center justify-center p-4">
         <div className="animate-spin rounded-full h-10 w-10 border-4 border-gold-400 border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-surface-dark flex flex-col pb-16">
+    <div className="min-h-screen bg-surface-dark dark:bg-darkBg-base text-gray-900 dark:text-gray-100 flex flex-col pb-16 transition-colors">
       {/* Top Bar Header */}
-      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      <header className="sticky top-0 z-40 bg-white/90 dark:bg-darkBg-surface/90 backdrop-blur-md border-b border-gray-100 dark:border-darkBg-border shadow-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link
             to="/"
-            className="p-2 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors focus:outline-none"
+            className="p-2 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-darkBg-card transition-colors focus:outline-none"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="font-bold text-gray-900 text-base sm:text-lg font-outfit">
+          <h1 className="font-bold text-gray-900 dark:text-white text-base sm:text-lg font-outfit">
             {isEditMode ? 'Edit Nasyid' : 'Tambah Nasyid Baru'}
           </h1>
           <div className="w-9" />
@@ -183,17 +182,17 @@ export const AdminAddEditPage: React.FC = () => {
       <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-8">
         <form onSubmit={handleSave} className="space-y-6">
           {errorMsg && (
-            <div className="p-4 rounded-2xl bg-red-50 border border-red-200 flex items-center gap-3 text-red-700 text-sm">
+            <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 flex items-center gap-3 text-red-700 dark:text-red-300 text-sm">
               <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {/* Form Card */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-6">
+          <div className="bg-white dark:bg-darkBg-card rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-darkBg-border shadow-sm space-y-6">
             {/* Judul Input */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
                 Judul Nasyid <span className="text-red-500">*</span>
               </label>
               <input
@@ -202,14 +201,14 @@ export const AdminAddEditPage: React.FC = () => {
                 onChange={(e) => setJudul(e.target.value)}
                 placeholder="Masukkan judul nasyid..."
                 disabled={loading}
-                className="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder-gray-400 focus:bg-white focus:outline-none focus:border-gold-400 focus:ring-4 focus:ring-gold-400/20 transition-all font-medium"
+                className="w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-darkBg-surface border border-gray-200 dark:border-darkBg-border text-gray-900 dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:bg-white dark:focus:bg-darkBg-card focus:outline-none focus:border-gold-400 focus:ring-4 focus:ring-gold-400/20 transition-all font-medium"
               />
             </div>
 
             {/* Lirik Input */}
             <div>
-              <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                Lirik Nasyid <span className="text-gray-400 font-normal">(Opsional)</span>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+                Lirik Nasyid <span className="text-gray-400 dark:text-gray-500 font-normal">(Opsional)</span>
               </label>
               <textarea
                 value={lirik}
@@ -217,14 +216,14 @@ export const AdminAddEditPage: React.FC = () => {
                 placeholder="Tuliskan lirik nasyid di sini..."
                 rows={6}
                 disabled={loading}
-                className="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder-gray-400 focus:bg-white focus:outline-none focus:border-gold-400 focus:ring-4 focus:ring-gold-400/20 transition-all font-sans"
+                className="w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-darkBg-surface border border-gray-200 dark:border-darkBg-border text-gray-900 dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:bg-white dark:focus:bg-darkBg-card focus:outline-none focus:border-gold-400 focus:ring-4 focus:ring-gold-400/20 transition-all font-sans"
               />
             </div>
 
             {/* Image Upload Area */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                   Gambar Nasyid ({items.length})
                 </label>
 
@@ -241,24 +240,24 @@ export const AdminAddEditPage: React.FC = () => {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={loading}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gold-50 hover:bg-gold-100 text-gold-800 text-xs font-semibold border border-gold-200 transition-colors focus:outline-none"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gold-50 dark:bg-gold-950/40 hover:bg-gold-100 dark:hover:bg-gold-900/60 text-gold-800 dark:text-gold-300 text-xs font-semibold border border-gold-200 dark:border-gold-800 transition-colors focus:outline-none"
                 >
-                  <Upload className="w-4 h-4 text-gold-600" />
+                  <Upload className="w-4 h-4 text-gold-600 dark:text-gold-400" />
                   <span>Pilih Gambar</span>
                 </button>
               </div>
 
-              {/* Image Preview Grid (with reordering support matching AddEditNasyidActivity) */}
+              {/* Image Preview Grid */}
               {items.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
                   {items.map((item, idx) => (
                     <div
                       key={item.id}
-                      className="group relative aspect-square rounded-2xl overflow-hidden border border-gray-200 bg-gray-100 shadow-sm"
+                      className="group relative aspect-square rounded-2xl overflow-hidden border border-gray-200 dark:border-darkBg-border bg-gray-100 dark:bg-darkBg-surface shadow-sm"
                     >
                       <img src={item.url} alt="" className="w-full h-full object-cover" />
 
-                      {/* Reorder and Delete controls overlay */}
+                      {/* Reorder and Delete controls */}
                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
                         <div className="flex justify-end">
                           <button
@@ -302,11 +301,11 @@ export const AdminAddEditPage: React.FC = () => {
               ) : (
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors"
+                  className="border-2 border-dashed border-gray-200 dark:border-darkBg-border rounded-2xl p-8 text-center bg-gray-50 dark:bg-darkBg-surface hover:bg-gray-100 dark:hover:bg-darkBg-card cursor-pointer transition-colors"
                 >
-                  <ImageIcon className="w-10 h-10 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm font-medium text-gray-600">Klik untuk memilih gambar</p>
-                  <p className="text-xs text-gray-400 mt-1">Format JPG, PNG, WEBP (bisa pilih beberapa gambar sekaligus)</p>
+                  <ImageIcon className="w-10 h-10 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Klik untuk memilih gambar</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Format JPG, PNG, WEBP (bisa pilih beberapa gambar sekaligus)</p>
                 </div>
               )}
             </div>

@@ -51,12 +51,11 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-surface-dark flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      {/* Top back link */}
+    <div className="min-h-screen bg-surface-dark dark:bg-darkBg-base flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors">
       <div className="absolute top-6 left-6">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Kembali</span>
@@ -67,16 +66,16 @@ export const LoginPage: React.FC = () => {
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-primary-dark mx-auto shadow-gold-glow mb-4">
           <Shield className="w-8 h-8" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 font-outfit">Login Admin</h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white font-outfit">Login Admin</h2>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           Masuk dengan akun admin untuk mengelola koleksi nasyid.
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-white py-8 px-6 sm:px-10 rounded-3xl border border-gray-100 shadow-sm space-y-6">
+        <div className="bg-white dark:bg-darkBg-card py-8 px-6 sm:px-10 rounded-3xl border border-gray-100 dark:border-darkBg-border shadow-sm space-y-6">
           {errorMsg && (
-            <div className="p-4 rounded-2xl bg-red-50 border border-red-200 flex items-start gap-3 text-red-700 text-sm">
+            <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 flex items-start gap-3 text-red-700 dark:text-red-300 text-sm">
               <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
               <span>{errorMsg}</span>
             </div>
@@ -84,11 +83,11 @@ export const LoginPage: React.FC = () => {
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
                 Email
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
                   <Mail className="w-5 h-5" />
                 </div>
                 <input
@@ -97,17 +96,17 @@ export const LoginPage: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@nasyid.com"
                   disabled={loading}
-                  className="w-full pl-11 pr-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder-gray-400 focus:bg-white focus:outline-none focus:border-gold-400 focus:ring-4 focus:ring-gold-400/20 transition-all font-medium"
+                  className="w-full pl-11 pr-4 py-3 rounded-2xl bg-gray-50 dark:bg-darkBg-surface border border-gray-200 dark:border-darkBg-border text-gray-900 dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:bg-white dark:focus:bg-darkBg-card focus:outline-none focus:border-gold-400 focus:ring-4 focus:ring-gold-400/20 transition-all font-medium"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
                 Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 dark:text-gray-500">
                   <Lock className="w-5 h-5" />
                 </div>
                 <input
@@ -116,7 +115,7 @@ export const LoginPage: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   disabled={loading}
-                  className="w-full pl-11 pr-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 text-gray-900 text-sm placeholder-gray-400 focus:bg-white focus:outline-none focus:border-gold-400 focus:ring-4 focus:ring-gold-400/20 transition-all font-medium"
+                  className="w-full pl-11 pr-4 py-3 rounded-2xl bg-gray-50 dark:bg-darkBg-surface border border-gray-200 dark:border-darkBg-border text-gray-900 dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:bg-white dark:focus:bg-darkBg-card focus:outline-none focus:border-gold-400 focus:ring-4 focus:ring-gold-400/20 transition-all font-medium"
                 />
               </div>
             </div>

@@ -39,7 +39,7 @@ export const HomePage: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  // Filter list client-side based on search query (matches NasyidAdapter.java getFilter)
+  // Filter list client-side based on search query
   const filteredList = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     if (!q) return nasyidList;
@@ -61,7 +61,7 @@ export const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface-dark pb-24">
+    <div className="min-h-screen flex flex-col bg-surface-dark dark:bg-darkBg-base transition-colors pb-24">
       <Header subtitle={`Total: ${nasyidList.length} Nasyid`} />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
@@ -74,7 +74,7 @@ export const HomePage: React.FC = () => {
         {loading ? (
           <LoadingSkeleton />
         ) : error ? (
-          <div className="p-4 rounded-xl bg-red-50 text-red-700 text-sm font-medium border border-red-200 text-center my-8">
+          <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 text-sm font-medium border border-red-200 dark:border-red-900 text-center my-8">
             {error}
           </div>
         ) : filteredList.length > 0 ? (
@@ -84,7 +84,7 @@ export const HomePage: React.FC = () => {
         )}
       </main>
 
-      {/* Floating Action Button (FAB) for Admin to Add Nasyid */}
+      {/* Floating Action Button (FAB) for Admin */}
       {isAdmin && (
         <Link
           to="/admin/add"
@@ -96,24 +96,24 @@ export const HomePage: React.FC = () => {
         </Link>
       )}
 
-      {/* Confirmation Modal for Delete (matching AlertDialog in NasyidAdapter.java) */}
+      {/* Delete Confirmation Modal */}
       {itemToDelete && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl border border-gray-100 animate-scale-up">
-            <div className="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center mb-4 mx-auto">
+          <div className="bg-white dark:bg-darkBg-card rounded-2xl p-6 max-w-sm w-full shadow-xl border border-gray-100 dark:border-darkBg-border animate-scale-up">
+            <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 flex items-center justify-center mb-4 mx-auto">
               <AlertTriangle className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-gray-900 text-center mb-2 font-outfit">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white text-center mb-2 font-outfit">
               Hapus Nasyid
             </h3>
-            <p className="text-sm text-gray-600 text-center mb-6">
-              Apakah Anda yakin ingin menghapus <span className="font-semibold text-gray-900">'{itemToDelete.judul}'</span>?
+            <p className="text-sm text-gray-600 dark:text-gray-300 text-center mb-6">
+              Apakah Anda yakin ingin menghapus <span className="font-semibold text-gray-900 dark:text-white">'{itemToDelete.judul}'</span>?
             </p>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setItemToDelete(null)}
                 disabled={isDeleting}
-                className="flex-1 py-2.5 rounded-xl border border-gray-300 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-colors focus:outline-none"
+                className="flex-1 py-2.5 rounded-xl border border-gray-300 dark:border-darkBg-border text-gray-700 dark:text-gray-200 text-sm font-semibold hover:bg-gray-50 dark:hover:bg-darkBg-surface transition-colors focus:outline-none"
               >
                 Batal
               </button>

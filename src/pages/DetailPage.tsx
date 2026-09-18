@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Nasyid } from '../types/nasyid';
 import { getNasyidById } from '../repositories/nasyidRepository';
 import { ImageLightbox } from '../components/nasyid/ImageLightbox';
@@ -37,19 +37,19 @@ export const DetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface-dark flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-surface-dark dark:bg-darkBg-base flex flex-col items-center justify-center p-4">
         <div className="animate-spin rounded-full h-10 w-10 border-4 border-gold-400 border-t-transparent mb-3" />
-        <p className="text-sm font-medium text-gray-500">Memuat detail nasyid...</p>
+        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Memuat detail nasyid...</p>
       </div>
     );
   }
 
   if (error || !nasyid) {
     return (
-      <div className="min-h-screen bg-surface-dark flex flex-col items-center justify-center p-4">
-        <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center border border-gray-100 shadow-sm">
+      <div className="min-h-screen bg-surface-dark dark:bg-darkBg-base flex flex-col items-center justify-center p-4">
+        <div className="bg-white dark:bg-darkBg-card rounded-2xl p-8 max-w-md w-full text-center border border-gray-100 dark:border-darkBg-border shadow-sm">
           <Music2 className="w-12 h-12 text-gold-500 mx-auto mb-3" />
-          <h2 className="text-lg font-bold text-gray-900 mb-2">{error || 'Data Tidak Ditemukan'}</h2>
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{error || 'Data Tidak Ditemukan'}</h2>
           <button
             onClick={() => navigate('/')}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gold-400 text-primary-dark font-semibold text-sm hover:bg-gold-300 transition-colors"
@@ -65,30 +65,30 @@ export const DetailPage: React.FC = () => {
   const hasImages = nasyid.images && nasyid.images.length > 0;
 
   return (
-    <div className="min-h-screen bg-surface-dark flex flex-col">
+    <div className="min-h-screen bg-surface-dark dark:bg-darkBg-base text-gray-900 dark:text-gray-100 flex flex-col transition-colors">
       {/* Top Bar Navigation */}
-      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      <header className="sticky top-0 z-40 bg-white/90 dark:bg-darkBg-surface/90 backdrop-blur-md border-b border-gray-100 dark:border-darkBg-border shadow-sm">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors focus:outline-none"
+            className="p-2 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-darkBg-card transition-colors focus:outline-none"
             aria-label="Kembali"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
 
           <div className="flex-1 text-center truncate">
-            <h1 className="font-bold text-gray-900 text-base sm:text-lg truncate font-outfit">
+            <h1 className="font-bold text-gray-900 dark:text-white text-base sm:text-lg truncate font-outfit">
               {nasyid.judul}
             </h1>
             {hasImages && (
-              <p className="text-xs text-gold-600 font-medium">
+              <p className="text-xs text-gold-600 dark:text-gold-400 font-medium">
                 {currentImageIndex + 1} / {nasyid.images.length} Gambar
               </p>
             )}
           </div>
 
-          <div className="w-9" /> {/* Spacer for symmetry */}
+          <div className="w-9" />
         </div>
       </header>
 
@@ -96,7 +96,7 @@ export const DetailPage: React.FC = () => {
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8">
         {/* Main Image Banner / Slider */}
         {hasImages ? (
-          <div className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm space-y-4 p-4">
+          <div className="bg-white dark:bg-darkBg-card rounded-3xl overflow-hidden border border-gray-100 dark:border-darkBg-border shadow-sm space-y-4 p-4">
             <div
               onClick={() => setIsLightboxOpen(true)}
               className="relative group aspect-[16/10] sm:aspect-[16/9] w-full bg-gray-950 rounded-2xl overflow-hidden cursor-pointer flex items-center justify-center"
@@ -109,7 +109,7 @@ export const DetailPage: React.FC = () => {
 
               {/* Fullscreen Overlay Hint */}
               <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white gap-2 font-medium text-sm">
-                <Maximize2 className="w-6 h-6" />
+                <Maximize2 className="w-6 h-6 text-gold-400" />
                 <span>Klik untuk Zoom & Fullscreen</span>
               </div>
 
@@ -132,7 +132,7 @@ export const DetailPage: React.FC = () => {
                     className={`relative w-20 h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
                       idx === currentImageIndex
                         ? 'border-gold-400 ring-2 ring-gold-400/30 scale-105'
-                        : 'border-gray-200 opacity-60 hover:opacity-100'
+                        : 'border-gray-200 dark:border-darkBg-border opacity-60 hover:opacity-100'
                     }`}
                   >
                     <img src={imgUrl} alt="" className="w-full h-full object-cover" />
@@ -142,19 +142,19 @@ export const DetailPage: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="p-8 bg-white rounded-2xl border border-gray-100 text-center text-gray-500">
+          <div className="p-8 bg-white dark:bg-darkBg-card rounded-2xl border border-gray-100 dark:border-darkBg-border text-center text-gray-500 dark:text-gray-400">
             Tidak ada gambar untuk nasyid ini.
           </div>
         )}
 
-        {/* Lirik Section if available */}
+        {/* Lirik Section */}
         {nasyid.lirik && (
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-4">
-            <h2 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3 font-outfit flex items-center gap-2">
+          <div className="bg-white dark:bg-darkBg-card rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-darkBg-border shadow-sm space-y-4">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-darkBg-border pb-3 font-outfit flex items-center gap-2">
               <Music2 className="w-5 h-5 text-gold-500" />
               <span>Lirik Nasyid</span>
             </h2>
-            <div className="whitespace-pre-line text-gray-800 leading-relaxed font-sans text-base">
+            <div className="whitespace-pre-line text-gray-800 dark:text-gray-200 leading-relaxed font-sans text-base">
               {nasyid.lirik}
             </div>
           </div>

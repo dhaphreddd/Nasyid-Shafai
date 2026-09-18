@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -12,12 +13,18 @@ export default {
           100: '#fffab8',
           200: '#fff485',
           300: '#ffe947',
-          400: '#ffd700', // gold_accent in colors.xml
+          400: '#ffd700', // gold_accent
           500: '#e6be00',
           600: '#b89200',
           700: '#8a6800',
           800: '#5c4300',
           900: '#302100',
+        },
+        darkBg: {
+          base: '#121212',
+          surface: '#1E1E1E',
+          card: '#242424',
+          border: '#333333',
         },
         surface: {
           light: '#FFFFFF',

@@ -11,13 +11,13 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'maskable-icon.png'],
       manifest: {
-        name: 'Nasyid As-Shafa',
-        short_name: 'NasyidShafa',
-        description: 'Koleksi Lirik & Gambar Nasyid As-Shafa',
+        name: 'Nasyid Shafai',
+        short_name: 'Nasyid Shafai',
+        description: 'Koleksi Lirik & Gambar Nasyid Shafai',
         theme_color: '#FFD700',
-        background_color: '#FFFFFF',
+        background_color: '#121212',
         display: 'standalone',
-        orientation: 'portrait-primary',
+        orientation: 'any', // Enables auto-rotate in installed PWA
         start_url: './',
         icons: [
           {
@@ -45,10 +45,10 @@ export default defineConfig({
             urlPattern: /^https:\/\/res\.cloudinary\.com\/.*/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'cloudinary-images-cache',
+              cacheName: 'cloudinary-images-cache-v2',
               expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 24 * 60 * 60, // 60 days
               },
               cacheableResponse: {
                 statuses: [0, 200]

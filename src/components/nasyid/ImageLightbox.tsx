@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import { getCloudinaryOptimizedUrl } from '../../services/cloudinaryService';
 
 interface ImageLightboxProps {
@@ -21,7 +21,9 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-  const containerRef = useRef<HTMLDivElement>(null);
+  // Touch Swipe tracking
+  const touchStartPos = useRef<{ x: number; y: number; time: number }>({ x: 0, y: 0, time: 0 });
+  const touchStartRef = useRef<{ dist: number; scale: number }>({ dist: 0, scale: 1 });
 
   // Reset zoom & pan when image index changes
   useEffect(() => {
@@ -85,7 +87,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
     }
   };
 
-  // Pan / Drag handlers when zoomed
+  // Mouse Pan / Drag handlers when zoomed
   const handleMouseDown = (e: React.MouseEvent) => {
     if (scale > 1) {
       setIsDragging(true);
@@ -106,11 +108,22 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
     setIsDragging(false);
   };
 
-  // Touch gesture support (Pinch zoom)
-  const touchStartRef = useRef<{ dist: number; scale: number }>({ dist: 0, scale: 1 });
-
+  // Touch Swipe & Pinch Gesture handlers
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 2) {
+    if (e.touches.length === 1) {
+      touchStartPos.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+        time: Date.now(),
+      };
+      if (scale > 1) {
+        setIsDragging(true);
+        setDragStart({
+          x: e.touches[0].clientX - position.x,
+          y: e.touches[0].clientY - position.y,
+        });
+      }
+    } else if (e.touches.length === 2) {
       const dist = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
@@ -120,7 +133,12 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 2 && touchStartRef.current.dist > 0) {
+    if (e.touches.length === 1 && scale > 1 && isDragging) {
+      setPosition({
+        x: e.touches[0].clientX - dragStart.x,
+        y: e.touches[0].clientY - dragStart.y,
+      });
+    } else if (e.touches.length === 2 && touchStartRef.current.dist > 0) {
       const dist = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
@@ -132,12 +150,30 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
     }
   };
 
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    setIsDragging(false);
+    if (scale === 1 && touchStartPos.current.time > 0 && e.changedTouches.length === 1) {
+      const deltaX = e.changedTouches[0].clientX - touchStartPos.current.x;
+      const deltaY = e.changedTouches[0].clientY - touchStartPos.current.y;
+      const timeElapsed = Date.now() - touchStartPos.current.time;
+
+      // Check if horizontal swipe gesture (min 40px deltaX, less than 100px deltaY)
+      if (Math.abs(deltaX) > 40 && Math.abs(deltaY) < 100 && timeElapsed < 400) {
+        if (deltaX < 0) {
+          handleNext();
+        } else {
+          handlePrev();
+        }
+      }
+    }
+    touchStartPos.current = { x: 0, y: 0, time: 0 };
+  };
+
   const currentImageUrl = getCloudinaryOptimizedUrl(images[currentIndex]);
 
   return (
     <div
       className="fixed inset-0 z-50 bg-black/95 flex flex-col justify-between overflow-hidden select-none animate-fade-in"
-      ref={containerRef}
       onWheel={handleWheel}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
@@ -151,7 +187,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
           </span>
         </div>
 
-        {/* Action icons */}
+        {/* Action Controls: Mobile Clean (Zoom buttons hidden on mobile, Desktop only) */}
         <div className="flex items-center gap-2">
           {scale > 1 && (
             <button
@@ -162,10 +198,12 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
               <RotateCcw className="w-5 h-5 text-white" />
             </button>
           )}
+
+          {/* Desktop-only Zoom In / Out Buttons */}
           <button
             onClick={handleZoomOut}
             disabled={scale <= 1}
-            className="p-2 rounded-full hover:bg-white/20 disabled:opacity-30 transition-colors focus:outline-none"
+            className="hidden md:flex p-2 rounded-full hover:bg-white/20 disabled:opacity-30 transition-colors focus:outline-none"
             title="Zoom Out"
           >
             <ZoomOut className="w-5 h-5 text-white" />
@@ -173,11 +211,13 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
           <button
             onClick={handleZoomIn}
             disabled={scale >= 8}
-            className="p-2 rounded-full hover:bg-white/20 disabled:opacity-30 transition-colors focus:outline-none"
+            className="hidden md:flex p-2 rounded-full hover:bg-white/20 disabled:opacity-30 transition-colors focus:outline-none"
             title="Zoom In"
           >
             <ZoomIn className="w-5 h-5 text-white" />
           </button>
+
+          {/* Close button */}
           <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-white/20 transition-colors focus:outline-none ml-2"
@@ -188,13 +228,14 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
         </div>
       </div>
 
-      {/* Main Image Display */}
+      {/* Main Image Display with Touch Swipe & Pinch Zoom */}
       <div
-        className="flex-1 relative flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing"
+        className="flex-1 relative flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing touch-pan-zoom"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <img
           src={currentImageUrl}
@@ -207,13 +248,13 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
         />
       </div>
 
-      {/* Navigation Arrows */}
+      {/* Navigation Arrows: Hidden on Mobile for clean UI, Desktop only */}
       {images.length > 1 && (
         <>
           <button
             onClick={handlePrev}
             disabled={currentIndex === 0}
-            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/70 text-white disabled:opacity-20 transition-all focus:outline-none backdrop-blur-sm z-10"
+            className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/70 text-white disabled:opacity-20 transition-all focus:outline-none backdrop-blur-sm z-10"
             aria-label="Gambar sebelumnya"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -221,7 +262,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
           <button
             onClick={handleNext}
             disabled={currentIndex === images.length - 1}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/70 text-white disabled:opacity-20 transition-all focus:outline-none backdrop-blur-sm z-10"
+            className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/70 text-white disabled:opacity-20 transition-all focus:outline-none backdrop-blur-sm z-10"
             aria-label="Gambar berikutnya"
           >
             <ChevronRight className="w-6 h-6" />
