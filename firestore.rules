@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if user has admin role
+    function isAdmin() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Nasyid collection security rules
+    match /nasyid/{document} {
+      // User biasa & public dapat membaca data nasyid
+      allow read: if true;
+      
+      // Hanya user dengan role admin yang dapat membuat, mengedit, dan menghapus nasyid
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Users collection security rules
+    match /users/{userId} {
+      // User dapat membaca datanya sendiri, admin dapat membaca semua user
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+  }
+}
